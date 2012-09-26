@@ -1,0 +1,28 @@
+body {
+	background: #f2f2f2;
+}
+
+.app {
+	margin: 20px auto;
+	width: 800px;
+}
+
+canvas {
+	background: #fff;
+	border: 1px solid;
+}
+
+.colorbox {
+	width: 50px;
+	height: 50px;
+	border: 1px solid #ddd;
+	display: inline-block;
+	margin: 0 20px 0 0;
+}
+
+.cursor {
+	background: #333;
+	width: 50px;
+	height: 50px;
+	position: absolute;
+}

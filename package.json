@@ -1,0 +1,22 @@
+{
+  "name": "draweez.me",
+  "subdomain": "draweezme",
+  "domains": [
+    "draweez.me",
+    "www.draweez.me"
+  ],
+  "author": "voronianski <dmitri.voronianski@gmail.com",
+  "scripts": {
+    "start": "server.js"
+  },
+  "version": "0.0.6-5",
+  "dependencies": {
+    "express": "3.x",
+    "consolidate": "0.4.0",
+    "socket.io": "0.9.10",
+    "swig": "0.12.0"
+  },
+  "engines": {
+    "node": "0.8.x"
+  }
+}
