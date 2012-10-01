@@ -9,6 +9,7 @@ $(function() {
 	var user_id = Math.random().toString(16).substring(2,15);
 	var clients = {};
 	var cursors = {};
+    var sentPath = {};
 
     var mainStyle = {
     	strokeColor: '#f80',
@@ -24,20 +25,29 @@ $(function() {
     sticker = new Tool();
     sticker.fixedDistance = 10;
 
-    function onMouseDown() {
+    function onMouseDown(e) {
     	path = new Path();
     	path.style = mainStyle;
     	path.selected = true;
+
+        sentPath = {
+            user: user_id,
+            start: e.point,
+            moves: []
+        }
+        //console.log(e.point);
     }
 
     function onMouseDrag(e) {
-    	socket.emit('move', {
-    		x: e.point.x,
-    		y: e.point.y,
-    		id: user_id
-    	});
-    	//console.log(e.point.x);
-    	path.add(e.point);
+        path.add(e.point);
+
+        sentPath.moves.push({
+            x: e.point.x,
+            y: e.point.y
+        });
+        //console.log(sentPath);
+    	socket.emit('move', JSON.stringify(sentPath));
+        sentPath.moves = new Array();
     }
 
     function onMouseUp(e) {
@@ -46,24 +56,33 @@ $(function() {
     }
 
     socket.on('moving', function(data) {
-    	console.log(data);
-    	externalDraw(data);
-    })
+    	externalDraw(JSON.parse(data));
+    });
 
+    var external_path = {};
     function externalDraw(data) {
-    	var path = clients[data.id];
+        //console.log(data.user);
+        var path = external_path[data.user];
 
-    	//if (!path) {
-    	//console.log(clients[data.id]);
-    	clients[data.id] = new Path();
-    	path = clients[data.id];
-    	console.log(path);
+        if (!path) {
+            external_path[data.user] = new Path();
+            path = external_path[data.user];
 
-    	points = new Point(data.x, data.y);
-    	path.style = mainStyle;
+            var startPoint = new Point(data.start.x, data.start.y);
+            path.strokeColor = '#f00';
+            path.strokeWidth = '10';
+            path.strokeCap = 'round';
+            path.add(startPoint);
+        }
 
-    	path.add(points);
-    	//}
+        var paths = data.moves;
+
+        for (var i = 0; i < paths.length; i++) {
+            console.log('loop goes');
+            path.add(paths[i].x, paths[i].y);
+        }
+
+        path.smooth();
     }
 
     sticker.onMouseDown = onMouseDown;
